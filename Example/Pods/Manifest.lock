@@ -1,0 +1,16 @@
+PODS:
+  - YBRequest (0.1.0)
+
+DEPENDENCIES:
+  - YBRequest (from `../`)
+
+EXTERNAL SOURCES:
+  YBRequest:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  YBRequest: 9c21121955dea077ab7f2e0c9d8989cd824959af
+
+PODFILE CHECKSUM: 138cff27f33c9932cf1d4d8cc2b8bc81516cf673
+
+COCOAPODS: 1.8.4
