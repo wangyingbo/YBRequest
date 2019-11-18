@@ -1,15 +1,36 @@
 PODS:
-  - YBRequest (0.1.0)
+  - AFNetworking (3.2.1):
+    - AFNetworking/NSURLSession (= 3.2.1)
+    - AFNetworking/Reachability (= 3.2.1)
+    - AFNetworking/Security (= 3.2.1)
+    - AFNetworking/Serialization (= 3.2.1)
+    - AFNetworking/UIKit (= 3.2.1)
+  - AFNetworking/NSURLSession (3.2.1):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/Reachability (3.2.1)
+  - AFNetworking/Security (3.2.1)
+  - AFNetworking/Serialization (3.2.1)
+  - AFNetworking/UIKit (3.2.1):
+    - AFNetworking/NSURLSession
+  - YBRequest (0.1.0):
+    - AFNetworking
 
 DEPENDENCIES:
   - YBRequest (from `../`)
+
+SPEC REPOS:
+  trunk:
+    - AFNetworking
 
 EXTERNAL SOURCES:
   YBRequest:
     :path: "../"
 
 SPEC CHECKSUMS:
-  YBRequest: 9c21121955dea077ab7f2e0c9d8989cd824959af
+  AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
+  YBRequest: b77ab8c351c3cabf539e2a0b3f408b6599712035
 
 PODFILE CHECKSUM: 138cff27f33c9932cf1d4d8cc2b8bc81516cf673
 

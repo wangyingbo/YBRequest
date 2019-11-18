@@ -10,6 +10,10 @@
 #endif
 #endif
 
+#import "YBBaseRequest.h"
+#import "YBRequest.h"
+#import "YBRequestManager.h"
+#import "YBRequestParam.h"
 
 FOUNDATION_EXPORT double YBRequestVersionNumber;
 FOUNDATION_EXPORT const unsigned char YBRequestVersionString[];
