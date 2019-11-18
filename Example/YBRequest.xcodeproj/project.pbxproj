@@ -24,6 +24,9 @@
 		6003F5BC195388D20070C39A /* Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6003F5BB195388D20070C39A /* Tests.m */; };
 		71719F9F1E33DC2100824A3D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 71719F9D1E33DC2100824A3D /* LaunchScreen.storyboard */; };
 		873B8AEB1B1F5CCA007FD442 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 873B8AEA1B1F5CCA007FD442 /* Main.storyboard */; };
+		D1BFF09D2382B88100153F1B /* SecondTestRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = D1BFF0992382B88100153F1B /* SecondTestRequest.m */; };
+		D1BFF09E2382B88100153F1B /* FirstTestRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = D1BFF09C2382B88100153F1B /* FirstTestRequest.m */; };
+		D1BFF0A12382B8AB00153F1B /* BaseRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = D1BFF09F2382B8AB00153F1B /* BaseRequest.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,6 +70,12 @@
 		873B8AEA1B1F5CCA007FD442 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Main.storyboard; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		C3C38FE1B1611433FFFC007A /* Pods-YBRequest_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YBRequest_Example.release.xcconfig"; path = "Target Support Files/Pods-YBRequest_Example/Pods-YBRequest_Example.release.xcconfig"; sourceTree = "<group>"; };
 		C53273505E34D7F93E9AF295 /* Pods-YBRequest_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YBRequest_Example.debug.xcconfig"; path = "Target Support Files/Pods-YBRequest_Example/Pods-YBRequest_Example.debug.xcconfig"; sourceTree = "<group>"; };
+		D1BFF0992382B88100153F1B /* SecondTestRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SecondTestRequest.m; sourceTree = "<group>"; };
+		D1BFF09A2382B88100153F1B /* FirstTestRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FirstTestRequest.h; sourceTree = "<group>"; };
+		D1BFF09B2382B88100153F1B /* SecondTestRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SecondTestRequest.h; sourceTree = "<group>"; };
+		D1BFF09C2382B88100153F1B /* FirstTestRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FirstTestRequest.m; sourceTree = "<group>"; };
+		D1BFF09F2382B8AB00153F1B /* BaseRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseRequest.m; sourceTree = "<group>"; };
+		D1BFF0A02382B8AB00153F1B /* BaseRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseRequest.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -132,6 +141,9 @@
 		6003F593195388D20070C39A /* Example for YBRequest */ = {
 			isa = PBXGroup;
 			children = (
+				D1BFF0A02382B8AB00153F1B /* BaseRequest.h */,
+				D1BFF09F2382B8AB00153F1B /* BaseRequest.m */,
+				D1BFF0982382B88100153F1B /* Requests */,
 				6003F59C195388D20070C39A /* YBAppDelegate.h */,
 				6003F59D195388D20070C39A /* YBAppDelegate.m */,
 				873B8AEA1B1F5CCA007FD442 /* Main.storyboard */,
@@ -194,6 +206,17 @@
 				27954E3353F69A48F96AC1B2 /* Pods-YBRequest_Tests.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		D1BFF0982382B88100153F1B /* Requests */ = {
+			isa = PBXGroup;
+			children = (
+				D1BFF09A2382B88100153F1B /* FirstTestRequest.h */,
+				D1BFF09C2382B88100153F1B /* FirstTestRequest.m */,
+				D1BFF09B2382B88100153F1B /* SecondTestRequest.h */,
+				D1BFF0992382B88100153F1B /* SecondTestRequest.m */,
+			);
+			path = Requests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -369,6 +392,9 @@
 				6003F59E195388D20070C39A /* YBAppDelegate.m in Sources */,
 				6003F5A7195388D20070C39A /* YBViewController.m in Sources */,
 				6003F59A195388D20070C39A /* main.m in Sources */,
+				D1BFF09D2382B88100153F1B /* SecondTestRequest.m in Sources */,
+				D1BFF0A12382B8AB00153F1B /* BaseRequest.m in Sources */,
+				D1BFF09E2382B88100153F1B /* FirstTestRequest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
