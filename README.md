@@ -9,7 +9,7 @@
 
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
 
-Please read the `BaseRequest` class to custom yourself request.
+Please read the `BaseRequest.m` class to custom yourself request.
 
 ## Requirements
 
