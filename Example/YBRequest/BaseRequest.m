@@ -11,9 +11,24 @@
 
 @implementation BaseRequest
 
+#pragma mark - factory method
++ (void)cancelRequest {
+    [[YBRequestManager shareInstance] removeRequestWithClass:[self class]];
+}
+
 #pragma mark - override
 -(void)dealloc{
     NSLog(@"<request:%@ - %p> dealloc",[self class],self);
+}
+
+#pragma mark - ----------------------BaseRequestDefaultDelegate----------------------
+
+- (NSDictionary *)configurePerDefaultParams {
+    return @{};
+}
+
+- (NSDictionary<NSString *,NSString *> *)propertyKeyMapper {
+    return @{};
 }
 
 #pragma mark ----------------------  配置请求参数   ----------------------
@@ -29,6 +44,12 @@
     return NO;
 }
 
+/// release是否收集log
+-(BOOL)configureCollectionLogIfRelease{
+    return NO;
+}
+
+/// 配置请求头
 -(NSDictionary *)configureHeader{
     NSMutableDictionary *header = [NSMutableDictionary dictionary];
     [header setObject:@"1" forKey:@"appBundleVersion"];
@@ -41,28 +62,48 @@
     return header;
 }
 
-/// 配置每个接口的属性参数
+/// 配置每个接口的属性参数和默认参数
 - (NSDictionary *)configurePerParams {
     
     NSMutableDictionary *mutDic = [NSMutableDictionary dictionary];
-    // Add properties of Self
+    
+    //****** 默认参数 ******
+    if ([self respondsToSelector:@selector(configurePerDefaultParams)]) {
+        NSDictionary *perDefaultParameters = [self configurePerDefaultParams];
+        if (perDefaultParameters) {
+            [mutDic addEntriesFromDictionary:perDefaultParameters];
+        }
+    }
+    
+    //****** Add properties of Self.  属性参数 ******
     unsigned count;
     objc_property_t *properties = class_copyPropertyList([self class], &count);
-    if (count<1) { return nil; }
+    if (count<1) { return mutDic.copy; }
+    
+    NSDictionary *mappers = nil;//属性参数名映射
+    if ([self respondsToSelector:@selector(propertyKeyMapper)]) {
+        mappers = [self propertyKeyMapper];
+    }
     for (NSInteger i = 0; i < count; i++) {
         NSString *key = [NSString stringWithUTF8String:property_getName(properties[i])];
-        if ([self respondsToSelector:@selector(valueForKey:)]) {
-            NSString *value = [self valueForKey:key];
-            if (value) {
-                [mutDic setObject:value forKey:key];
+        if (![self respondsToSelector:@selector(valueForKey:)]) {
+            continue;
+        }
+        NSString *value = [self valueForKey:key];
+        if (!value) { continue; }
+        NSString *realKey = key;
+        if (mappers) {//在映射里获取到真实的key
+            if ([[mappers allKeys] containsObject:key]) {
+                realKey = [mappers objectForKey:key];
             }
         }
+        [mutDic setObject:value forKey:realKey];
     }
     free(properties);
     return mutDic.copy;
 }
 
-/// 配置一些默认参数
+/// 配置所有接口请求的默认参数，每个接口都会有此参数
 -(NSDictionary *)configureDefalutParams{
     
     NSMutableDictionary *header = [NSMutableDictionary dictionary];
@@ -106,7 +147,13 @@
 #pragma mark ----------------------  监听(阻断)请求过程   ----------------------
 
 - (BOOL)requestProgressDidGetParams:(YBBaseRequest *)request{
-    
+    return YES;
+}
+
+/// 可在此对参数进行一些处理，比如加密等
+/// @param request request description
+/// @param task task description
+- (BOOL)requestProgressWillSendRequest:(YBBaseRequest *)request task:(NSURLSessionTask *)task {
     return YES;
 }
 

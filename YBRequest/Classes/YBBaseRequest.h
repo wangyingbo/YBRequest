@@ -31,11 +31,17 @@
 #endif
 
 
-#ifdef DEBUG
+//#ifdef DEBUG
+//#   define RequestLog(fmt, ...) NSLog((@"\nfun:%s,line:%d\n" fmt @"\n"), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);
+//#else
+//#   define RequestLog(...)
+//#endif
+
+
+//根据代理方法决定是否打印
 #   define RequestLog(fmt, ...) NSLog((@"\nfun:%s,line:%d\n" fmt @"\n"), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);
-#else
-#   define RequestLog(...)
-#endif
+
+
 
 
 //请求方法,default=RequestMethodPost

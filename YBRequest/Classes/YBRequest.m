@@ -61,7 +61,7 @@
         NSData *data = nil;
         id json = nil;
         NSMutableString *log = [NSMutableString string];
-        [log appendFormat:@"\n===================== request-begin ====================="];
+        [log appendFormat:@"\n===================== %@-begin =====================",[self class]];
         if (self.responseObject) {
             @try {
                 json = [NSJSONSerialization JSONObjectWithData:self.responseObject options:NSJSONReadingMutableLeaves error:nil];
@@ -131,7 +131,7 @@
         [log appendFormat:@"\n"];
         [log appendFormat:@"\n【#placeholder#】"];
         [log appendFormat:@"\n"];
-        [log appendFormat:@"\n===================== request-end =====================\n"];
+        [log appendFormat:@"\n===================== %@-end =====================\n",[self class]];
         
         [[YBRequestManager shareInstance] addLog:[NSString stringWithString:log]];
         RequestLog(@"%@",log);

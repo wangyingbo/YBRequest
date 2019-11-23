@@ -47,7 +47,7 @@
 #pragma mark - action
 -(void)postButtonClick{
     
-    [SecondTestRequest startRequestWithName:@"wangyingbo" ID:@"001" success:^(SecondTestRequest *request) {
+    [SecondTestRequest startRequestWithName:@"wangyingbo" ID:@"10001" success:^(SecondTestRequest *request) {
         self.textView.text = [NSString stringWithFormat:@"%@",request.responseObject];
     } failure:^(id request) {
         

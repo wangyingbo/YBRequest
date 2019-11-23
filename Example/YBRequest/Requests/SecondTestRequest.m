@@ -23,9 +23,28 @@
     return request;
 }
 
-
 - (NSString *)configureUrl{
-    return @"";
+    return @"s";
+}
+
+/// 属性参数名做映射转换
+- (NSDictionary<NSString *,NSString *> *)propertyKeyMapper {
+    return @{
+        @"ID":@"id"
+    };
+}
+
+/// 配置每个接口的默认参数
+- (NSDictionary *)configurePerDefaultParams {
+    return @{
+        @"type":@"bankList",
+        @"pageSize":@"20"
+    };
+}
+
+/// 是否禁止打印log
+- (BOOL)banRequestLog {
+    return NO;
 }
 
 
