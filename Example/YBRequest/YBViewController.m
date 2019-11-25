@@ -49,7 +49,7 @@
     
     [SecondTestRequest startRequestWithName:@"wangyingbo" ID:@"10001" success:^(SecondTestRequest *request) {
         self.textView.text = [NSString stringWithFormat:@"%@",request.responseObject];
-    } failure:^(id request) {
+    } failure:^(SecondTestRequest *request) {
         
     }];
     
