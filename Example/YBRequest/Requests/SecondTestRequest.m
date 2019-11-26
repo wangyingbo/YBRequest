@@ -15,7 +15,7 @@
 
 @implementation SecondTestRequest
 
-+ (instancetype)startRequestWithName:(NSString *)name ID:(NSString *)ID success:(RequestFinishBlock)success failure:(RequestFailedBlock)failure {
++ (instancetype)startRequestWithName:(NSString *)name ID:(NSString *)ID success:(BaseRequestSuccessBlock)success failure:(BaseRequestFailureBlock)failure {
     SecondTestRequest *request = [[[self class] alloc] init];
     request.name = name;
     request.ID = ID;

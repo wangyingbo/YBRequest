@@ -11,6 +11,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@class BaseRequest;
+typedef void(^BaseRequestSuccessBlock)(__kindof BaseRequest *request);
+typedef void(^BaseRequestFailureBlock)(__kindof BaseRequest *request);
 
 @interface BaseRequest : YBRequest
 

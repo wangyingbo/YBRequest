@@ -12,7 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface SecondTestRequest : BaseRequest
 
-+ (instancetype)startRequestWithName:(NSString *)name ID:(NSString *)ID success:(RequestFinishBlock)success failure:(RequestFailedBlock)failure;
++ (instancetype)startRequestWithName:(NSString *)name ID:(NSString *)ID success:(BaseRequestSuccessBlock)success failure:(BaseRequestFailureBlock)failure;
 
 @end
 

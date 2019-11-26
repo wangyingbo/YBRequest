@@ -47,14 +47,16 @@
 #pragma mark - action
 -(void)postButtonClick{
     
-    [SecondTestRequest startRequestWithName:@"wangyingbo" ID:@"10001" success:^(SecondTestRequest *request) {
+    //调用方式一
+    [SecondTestRequest startRequestWithName:@"wangyingbo" ID:@"10001" success:^(__kindof BaseRequest * _Nonnull request) {
         self.textView.text = [NSString stringWithFormat:@"%@",request.responseObject];
-    } failure:^(SecondTestRequest *request) {
+    } failure:^(__kindof BaseRequest * _Nonnull request) {
         
     }];
     
     
     return;
+    //调用方式二
     [FirstTestRequest requestWithDic:nil requestFinish:^(FirstTestRequest *request) {
         self.textView.text = [NSString stringWithFormat:@"%@",request.responseJson];
     } requestFailed:^(FirstTestRequest *request) {
@@ -64,7 +66,7 @@
     
     
     return;
-    //上传图片、视频、其他
+    //上传图片、视频、其他数据
     [BaseRequest requestWithParam:nil inView:nil requestUpload:^(id<AFMultipartFormData> formData) {
         
         NSData *data = UIImageJPEGRepresentation([UIImage imageNamed:@""], 0.7);
