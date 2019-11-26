@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'YBRequest'
-  s.version          = '0.1.3'
+  s.version          = '0.1.4'
   s.summary          = 'a afn sub classes'
 
 # This description is used to generate tags and improve search results.
@@ -30,7 +30,7 @@ Pod::Spec.new do |s|
 
   s.ios.deployment_target = '8.0'
 
-  s.source_files = 'YBRequest/Classes/*'
+  s.source_files = 'YBRequest/Classes/**/*'
   
   # s.resource_bundles = {
   #   'YBRequest' => ['YBRequest/Assets/*.png']
