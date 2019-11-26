@@ -21,7 +21,7 @@ DEPENDENCIES:
   - YBRequest (from `../`)
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
+  trunk:
     - AFNetworking
 
 EXTERNAL SOURCES:
@@ -32,6 +32,6 @@ SPEC CHECKSUMS:
   AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
   YBRequest: 811c88b41a0e833935f911921e6d7e11775eb826
 
-PODFILE CHECKSUM: c58f19c38bb931fdff16de220c8273e01618e4cf
+PODFILE CHECKSUM: 6a9f2787593f896474264490ea08dad4ec9d659d
 
 COCOAPODS: 1.8.4
