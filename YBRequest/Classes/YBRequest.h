@@ -9,8 +9,30 @@
 #import <Foundation/Foundation.h>
 #import "YBBaseRequest.h"
 
-@interface YBRequest : YBBaseRequest
 
+/// 一些自定义的适配自己项目的代理方法，可在此添加
+@protocol YBRequestDefaultDelegate <NSObject>
+@optional;
+
+/// 配置每个接口的默认参数，可与属性参数同时同在
+- (nullable NSDictionary *)configurePerDefaultParams;
+
+/**
+ 属性参数键映射，如参数为id，则属性名为可写为ID
+ 此方法里实现映射：@{ @"ID":@"id" }
+ */
+- (nullable NSDictionary<NSString *,NSString *> *)propertyKeyMapper;
+
+@end
+
+
+@interface YBRequest : YBBaseRequest<YBRequestDefaultDelegate>
+
+/**
+ 1、调用类方法为取消当前类的所有request请求；
+ 2、也可调用同名实例方法 -cancelRequest，取消当前request实例的请求;
+ */
++ (void)cancelRequest;
 
 @end
 

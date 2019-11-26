@@ -38,7 +38,7 @@
 - (NSDictionary *)configurePerDefaultParams {
     return @{
         @"type":@"bankList",
-        @"pageSize":@"20"
+        @"pageSize":@"20",
     };
 }
 

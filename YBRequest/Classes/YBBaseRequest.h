@@ -87,7 +87,7 @@ typedef void (^RequestDownloadcompletionBlock)(NSURLResponse *response, NSURL *f
 - (NSURL    *)configureDownloadDestinationPath:(NSURL *)targetPath response:(NSURLResponse *)response;//配置下载的目标目录
 
 - (NSDictionary *)configureHeader;//配置请求头
-//配置默认请求参数,请求时会和传进来的参数合并,并且传的参数会覆盖默认参数的相同项
+//配置所有请求的默认请求参数,请求时会和传进来的参数合并,并且传的参数会覆盖默认参数的相同项
 - (NSDictionary *)configureDefalutParams;
 - (NSDictionary *)configurePerParams;//配置每一个接口的参数
 - (AFSecurityPolicy *)configureSecurityPolicy;//配置隐私策略
@@ -187,34 +187,49 @@ typedef void (^RequestDownloadcompletionBlock)(NSURLResponse *response, NSURL *f
 
 
 //以下参数可在代理方法requestProgressDidGetParams时(后)取到
-@property (nonatomic,   copy) NSString *url;//请求的url,最终会和baseUrl,拼成totalUrl
-@property (nonatomic,   copy) NSString *baseUrl;//baseUrl,最终会和url,拼成totalUrl
-@property (nonatomic,   copy) NSString *totalUrl;//baseUrl和url拼的
-@property (nonatomic, strong) NSURLRequest *downLoadRequest;//下载的Request
-@property (nonatomic, assign) RequestType requestType;//请求类型
-@property (nonatomic, assign) RequestMethod requestMethod;//请求方法
-@property (nonatomic, strong) AFSecurityPolicy *securityPolicy;//隐私策略
+/**请求的url,最终会和baseUrl,拼成totalUrl*/
+@property (nonatomic,   copy) NSString *url;//
+/**baseUrl,最终会和url,拼成totalUrl*/
+@property (nonatomic,   copy) NSString *baseUrl;//
+/**baseUrl和url拼接后的总的url*/
+@property (nonatomic,   copy) NSString *totalUrl;//
+/**下载的Request*/
+@property (nonatomic, strong) NSURLRequest *downLoadRequest;//
+/**请求类型*/
+@property (nonatomic, assign) RequestType requestType;
+/**请求方法*/
+@property (nonatomic, assign) RequestMethod requestMethod;
+/**隐私策略*/
+@property (nonatomic, strong) AFSecurityPolicy *securityPolicy;
 
-@property (nonatomic, strong) NSMutableDictionary *header;//请求头
-@property (nonatomic, strong) YBRequestParam *params;//请求参数
-@property (nonatomic, strong) NSMutableDictionary *defalutParams;//请求默认参数
-@property (nonatomic, strong) NSMutableDictionary *totalParams;//params.param和defalutParams的和
-@property (nonatomic, assign) NSTimeInterval timeoutInterval;//请求超时的时间
+/**请求头*/
+@property (nonatomic, strong) NSMutableDictionary *header;
+/**请求参数*/
+@property (nonatomic, strong) YBRequestParam *params;
+/**请求默认参数*/
+@property (nonatomic, strong) NSMutableDictionary *defalutParams;
+/**总的参数，params.param和defalutParams的和*/
+@property (nonatomic, strong) NSMutableDictionary *totalParams;
+/**请求超时的时间*/
+@property (nonatomic, assign) NSTimeInterval timeoutInterval;
 
 
-//用户默认处理弹框和loading的view
+/**用户默认处理弹框和loading的view*/
 @property (nonatomic,   weak) UIView *inView;
 
-//以下参数可在代理方法requestProgressDidFailedRequest时(后)取到
+/**可在代理方法requestProgressDidFailedRequest时(后)取到*/
 @property (nonatomic, strong) NSError  *error;
 
-//以下参数可在代理方法requestProgressDidFinishRequest时(后)取到
+/**responseObject，可在代理方法requestProgressDidFinishRequest时(后)取到*/
 @property (nonatomic, strong) id responseObject;
+/**responseJson，可在代理方法requestProgressDidFinishRequest时(后)取到*/
 @property (nonatomic, strong) id responseJson;
 
-//请求开始和结束的时间
+/**请求开始的时间*/
 @property (nonatomic, assign) CFAbsoluteTime startTime;
+/**请求开始和结束的时间*/
 @property (nonatomic, assign) CFAbsoluteTime endTime;
+/**是否在release环境收集log*/
 @property (nonatomic, assign) BOOL collectionLogIfRelease;
 
 

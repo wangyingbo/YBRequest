@@ -7,28 +7,12 @@
 //
 
 #import "BaseRequest.h"
-#import <objc/runtime.h>
 
 @implementation BaseRequest
-
-#pragma mark - factory method
-+ (void)cancelRequest {
-    [[YBRequestManager shareInstance] removeRequestWithClass:[self class]];
-}
 
 #pragma mark - override
 -(void)dealloc{
     NSLog(@"<request:%@ - %p> dealloc",[self class],self);
-}
-
-#pragma mark - ----------------------BaseRequestDefaultDelegate----------------------
-
-- (NSDictionary *)configurePerDefaultParams {
-    return @{};
-}
-
-- (NSDictionary<NSString *,NSString *> *)propertyKeyMapper {
-    return @{};
 }
 
 #pragma mark ----------------------  配置请求参数   ----------------------
@@ -39,17 +23,22 @@
     //return @"http://180.76.121.105:8296";
 }
 
-/// 配置是否禁止log，子类可重写
-- (BOOL)banRequestLog {
-    return NO;
+/// 配置每个请求接口的url，子类重写
+- (NSString *)configureUrl {
+    return @"";
 }
 
-/// release是否收集log
--(BOOL)configureCollectionLogIfRelease{
-    return NO;
+/// 配置传参类型：是formData还是json
+-(RequestType)configureRequestType{
+    return RequestTypeForm;
 }
 
-/// 配置请求头
+/// 配置请求方式，post、get等
+-(RequestMethod)configureRequestMethod{
+    return RequestMethodPost;
+}
+
+/// 配置所有请求的请求头
 -(NSDictionary *)configureHeader{
     NSMutableDictionary *header = [NSMutableDictionary dictionary];
     [header setObject:@"1" forKey:@"appBundleVersion"];
@@ -62,63 +51,31 @@
     return header;
 }
 
-/// 配置每个接口的属性参数和默认参数
-- (NSDictionary *)configurePerParams {
-    
-    NSMutableDictionary *mutDic = [NSMutableDictionary dictionary];
-    
-    //****** 默认参数 ******
-    if ([self respondsToSelector:@selector(configurePerDefaultParams)]) {
-        NSDictionary *perDefaultParameters = [self configurePerDefaultParams];
-        if (perDefaultParameters) {
-            [mutDic addEntriesFromDictionary:perDefaultParameters];
-        }
-    }
-    
-    //****** Add properties of Self.  属性参数 ******
-    unsigned count;
-    objc_property_t *properties = class_copyPropertyList([self class], &count);
-    if (count<1) { return mutDic.copy; }
-    
-    NSDictionary *mappers = nil;//属性参数名映射
-    if ([self respondsToSelector:@selector(propertyKeyMapper)]) {
-        mappers = [self propertyKeyMapper];
-    }
-    for (NSInteger i = 0; i < count; i++) {
-        NSString *key = [NSString stringWithUTF8String:property_getName(properties[i])];
-        if (![self respondsToSelector:@selector(valueForKey:)]) {
-            continue;
-        }
-        NSString *value = [self valueForKey:key];
-        if (!value) { continue; }
-        NSString *realKey = key;
-        if (mappers) {//在映射里获取到真实的key
-            if ([[mappers allKeys] containsObject:key]) {
-                realKey = [mappers objectForKey:key];
-            }
-        }
-        [mutDic setObject:value forKey:realKey];
-    }
-    free(properties);
-    return mutDic.copy;
-}
-
 /// 配置所有接口请求的默认参数，每个接口都会有此参数
 -(NSDictionary *)configureDefalutParams{
-    
     NSMutableDictionary *header = [NSMutableDictionary dictionary];
     [header setObject:@"xxxxxx" forKey:@"token"];
     return header;
 }
 
-/// 配置传参类型：是formData还是json
--(RequestType)configureRequestType{
-    return RequestTypeForm;
+/// 配置每一个接口的参数（合并属性参数和默认参数），子类尽量不重写此方法，在此统一处理。
+- (NSDictionary *)configurePerParams {
+    return [super configurePerParams];
 }
 
-/// 配置请求方式，post、get等
--(RequestMethod)configureRequestMethod{
-    return RequestMethodPost;
+/// 配置请求超时时间
+- (NSTimeInterval)configureTimeoutInterval {
+    return 30;
+}
+
+/// 配置是否禁止log，子类可重写
+- (BOOL)banRequestLog {
+    return NO;
+}
+
+/// release是否收集log
+-(BOOL)configureCollectionLogIfRelease{
+    return NO;
 }
 
 //配置证书
@@ -143,10 +100,33 @@
 //    return securityPolicy;
 //}
 
+#pragma mark - ---------------- YBRequestDefaultDelegate ----------------
 
-#pragma mark ----------------------  监听(阻断)请求过程   ----------------------
+/// 配置每一个接口请求的默认参数，每一个子类request可重写此方法
+- (NSDictionary *)configurePerDefaultParams {
+    return @{};
+}
 
+/**
+ 每一个接口请求的属性参数的键名转换，每一个子类可重写此方法。
+ 如参数为id，则属性名为可写为ID，此方法里实现映射：
+    @{ @"ID":@"id" }
+ */
+- (NSDictionary<NSString *,NSString *> *)propertyKeyMapper {
+    return @{};
+}
+
+
+#pragma mark - ---------------- 监听(阻断)请求过程 ----------------
+
+/// 可在此获取请求已经配好的参数所有参数，可在此修改或做其他操作
+/// @param request request description
 - (BOOL)requestProgressDidGetParams:(YBBaseRequest *)request{
+    NSDictionary *dic = request.totalParams;
+    if (dic) {
+        //处理参数
+        NSLog(@"\n");
+    }
     return YES;
 }
 
