@@ -1,4 +1,3 @@
-source 'https://github.com/wangyingbo/YBRequest.git'
 
 
 use_frameworks!
