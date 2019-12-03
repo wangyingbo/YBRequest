@@ -30,12 +30,14 @@
     UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
     button.frame = CGRectMake(20, 60, [UIScreen mainScreen].bounds.size.width - 40, 45.f);
     button.titleLabel.font = [UIFont systemFontOfSize:20.];
+    button.layer.cornerRadius = 3.f;
     [button setTitle:@"请求" forState:UIControlStateNormal];
     button.backgroundColor = [UIColor colorWithWhite:0 alpha:.1];
     [button addTarget:self action:@selector(postButtonClick) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:button];
     
     UITextView *textView = [[UITextView alloc] initWithFrame:CGRectMake(20, CGRectGetMaxY(button.frame) + 20, [UIScreen mainScreen].bounds.size.width - 40, [UIScreen mainScreen].bounds.size.height - CGRectGetMaxY(button.frame) - 50 )];
+    textView.layer.cornerRadius = 3.f;
     textView.editable = NO;
     textView.font = [UIFont systemFontOfSize:17.f];
     textView.backgroundColor = [UIColor colorWithWhite:0 alpha:.1];

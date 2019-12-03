@@ -87,7 +87,7 @@
         json = [NSJSONSerialization JSONObjectWithData:self.responseObject options:NSJSONReadingMutableLeaves error:&error];
     } @catch (NSException *exception) {
         self.error = error;
-        RequestLog(@"服务器返回数据解析错误:parse error! : %@",self.responseObject);
+        NSLog(@"服务器返回数据解析错误:parse error! : %@",self.responseObject);
     } @finally {
         
     }
@@ -201,7 +201,7 @@
         [log appendFormat:@"\n===================== %@-end =====================\n",[self class]];
         
         [[YBRequestManager shareInstance] addLog:[NSString stringWithString:log]];
-        RequestLog(@"%@",log);
+        NSLog(@"%@",log);
     }
 }
     
