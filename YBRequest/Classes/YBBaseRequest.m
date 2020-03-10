@@ -234,6 +234,12 @@
 - (RequestType)configureRequestType {
     return RequestTypeForm;
 }
+- (ResponseSerializer)configureResponseSerializer {
+    return ResponseSerializerHttp;
+}
+- (NSSet<NSString *> *)configureAcceptableContentTypes {
+    return [NSSet setWithObjects:@"application/json",@"text/html",@"text/javascript",@"text/json",@"text/plain", nil];
+}
 - (RequestMethod)configureRequestMethod {
     return RequestMethodPost;
 }
@@ -331,11 +337,21 @@
     }else{
         _requestType = RequestTypeForm;
     }
-    //获取请求方法
+    if ([self.paramDelegate respondsToSelector:@selector(configureResponseSerializer)]) {
+        _responseSerializer = [self.paramDelegate configureResponseSerializer];
+    }else{
+        _responseSerializer = ResponseSerializerHttp;
+    }
+    //获取响应序列化
     if ([self.paramDelegate respondsToSelector:@selector(configureRequestMethod)]) {
         _requestMethod = [self.paramDelegate configureRequestMethod];
     }else{
         _requestMethod = RequestMethodPost;
+    }
+    
+    //获取接受类型
+    if ([self.paramDelegate respondsToSelector:@selector(configureAcceptableContentTypes)]) {
+        _acceptableContentTypes = [self.paramDelegate configureAcceptableContentTypes];
     }
     //获取请求头
     if ([self.paramDelegate respondsToSelector:@selector(configureHeader)]) {
@@ -427,7 +443,22 @@
         default:break;
     }
     sessionManager.requestSerializer.timeoutInterval = self.timeoutInterval;
-    sessionManager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    switch (self.responseSerializer) {
+        case ResponseSerializerHttp: {
+            sessionManager.responseSerializer = [AFHTTPResponseSerializer serializer];
+        }
+            break;
+        case ResponseSerializerJson: {
+            sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
+        }
+            break;
+            
+        default:
+            break;
+    }
+    if (_acceptableContentTypes) {  sessionManager.responseSerializer.acceptableContentTypes = _acceptableContentTypes;
+    }
+    
     if (self.header && [self.header isKindOfClass:[NSDictionary class]]) {
         NSArray *keys = self.header.allKeys;
         for (NSString *key in keys) {

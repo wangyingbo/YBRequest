@@ -10,6 +10,14 @@
 #import "YBBaseRequest.h"
 
 
+
+@protocol Ignored
+@end
+@protocol Required
+@end
+@protocol Optional
+@end
+
 /// 一些自定义的适配自己项目的代理方法，可在此添加
 @protocol YBRequestDefaultDelegate <NSObject>
 @optional;
@@ -22,6 +30,9 @@
  此方法里实现映射：@{ @"ID":@"id" }
  */
 - (nullable NSDictionary<NSString *,NSString *> *)propertyKeyMapper;
+
+/// 需要被忽视的key
+- (NSArray<NSString *> *_Nullable)ignorePropertyKeys;
 
 @end
 

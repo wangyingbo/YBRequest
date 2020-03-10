@@ -60,6 +60,15 @@ typedef NS_ENUM(NSInteger,RequestType) {
     RequestTypeJson = 1,
 };
 
+//响应序列化，默认是ResponseSerializerHttp
+typedef NS_ENUM(NSUInteger,ResponseSerializer) {
+    ResponseSerializerHttp = 0,
+    ResponseSerializerJson = 1,
+};
+
+//NS_ASSUME_NONNULL_BEGIN
+
+
 //请求回调block
 typedef void (^RequestStartBlock)(id request);
 typedef void (^RequestProgressBlock)(id request,NSProgress *progress);
@@ -79,6 +88,8 @@ typedef void (^RequestDownloadcompletionBlock)(NSURLResponse *response, NSURL *f
 @protocol YBRequestParamDelegate <NSObject>
 
 - (RequestType)configureRequestType;//配置请求方式
+- (NSSet <NSString *> *)configureAcceptableContentTypes;
+- (ResponseSerializer)configureResponseSerializer;//响应序列化
 - (RequestMethod)configureRequestMethod;//配置请求方法
 - (NSString *)configureBaseUrl;//配置baseUrl
 - (NSString *)configureUrl;//配置url
@@ -197,6 +208,10 @@ typedef void (^RequestDownloadcompletionBlock)(NSURLResponse *response, NSURL *f
 @property (nonatomic, strong) NSURLRequest *downLoadRequest;//
 /**请求类型*/
 @property (nonatomic, assign) RequestType requestType;
+/**响应序列化*/
+@property (nonatomic, assign) ResponseSerializer responseSerializer;
+/***/
+@property (nonatomic, copy, nullable) NSSet<NSString *> *acceptableContentTypes;
 /**请求方法*/
 @property (nonatomic, assign) RequestMethod requestMethod;
 /**隐私策略*/
@@ -218,7 +233,10 @@ typedef void (^RequestDownloadcompletionBlock)(NSURLResponse *response, NSURL *f
 @property (nonatomic,   weak) UIView *inView;
 
 /**可在代理方法requestProgressDidFailedRequest时(后)取到*/
-@property (nonatomic, strong) NSError  *error;
+@property (nonatomic, strong) NSError *error;
+
+/**参数错误的error*/
+@property (nonatomic, strong) NSError *paramError;
 
 /**responseObject，可在代理方法requestProgressDidFinishRequest时(后)取到*/
 @property (nonatomic, strong) id responseObject;
@@ -321,5 +339,5 @@ typedef void (^RequestDownloadcompletionBlock)(NSURLResponse *response, NSURL *f
 
 @end
 
-
+//NS_ASSUME_NONNULL_END
 

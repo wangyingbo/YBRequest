@@ -33,6 +33,11 @@
     return @{};
 }
 
+/// 被忽视的属性参数
+- (NSArray<NSString *> *)ignorePropertyKeys {
+    return @[];
+}
+
 #pragma mark -  ---------------- YBRequestParamDelegate ----------------
 
 /// 配置每个接口的属性参数和默认参数
@@ -49,6 +54,8 @@
     }
     
     //****** Add properties of Self.  属性参数 ******
+    NSScanner *scanner = nil;
+    NSString* propertyType = nil;
     unsigned count;
     objc_property_t *properties = class_copyPropertyList([self class], &count);
     if (count<1) { return mutDic.copy; }
@@ -58,12 +65,69 @@
         mappers = [self propertyKeyMapper];
     }
     for (NSInteger i = 0; i < count; i++) {
-        NSString *key = [NSString stringWithUTF8String:property_getName(properties[i])];
+        
+        //get property name
+        objc_property_t property = properties[i];
+        const char *propertyName = property_getName(property);
+        NSString *key = [NSString stringWithUTF8String:propertyName];
+        
+        //get property attributes
+        const char *attrs = property_getAttributes(property);
+        NSString* propertyAttributes = @(attrs);
+        NSArray* attributeItems = [propertyAttributes componentsSeparatedByString:@","];
+        
+        //ignore read-only properties
+        if ([attributeItems containsObject:@"R"]) {
+            //continue; //to next property
+        }
+        
+        BOOL _optional = NO,_ignored = NO,_required = NO;
+        scanner = [NSScanner scannerWithString: propertyAttributes];
+        [scanner scanUpToString:@"T" intoString: nil];
+        [scanner scanString:@"T" intoString:nil];
+        //check if the property is an instance of a class
+        if ([scanner scanString:@"@\"" intoString: &propertyType]) {
+            [scanner scanUpToCharactersFromSet:[NSCharacterSet characterSetWithCharactersInString:@"\"<"] intoString:&propertyType];
+            //Class cla = NSClassFromString(propertyType);
+            
+            //参见jsonModel
+            //read through the property protocols
+            while ([scanner scanString:@"<" intoString:NULL]) {
+                NSString* protocolName = nil;
+                [scanner scanUpToString:@">" intoString: &protocolName];
+                if ([protocolName isEqualToString:NSStringFromProtocol(@protocol(Optional))]) {
+                    _optional = YES;
+                } else if([protocolName isEqualToString:NSStringFromProtocol(@protocol(Ignored))]) {
+                    _ignored = YES;
+                } else if([protocolName isEqualToString:NSStringFromProtocol(@protocol(Required))]) {
+                    _required = YES;
+                } else {
+                    
+                }
+
+                [scanner scanString:@">" intoString:NULL];
+            }
+        }
+        
+        
         if (![self respondsToSelector:@selector(valueForKey:)]) {
             continue;
         }
-        NSString *value = [self valueForKey:key];
+        id value = [self valueForKey:key];
+        if (_required) {
+            NSString *reason = [NSString stringWithFormat:@"parameters error: value of the the key '%@' can not be nil",key];
+            NSAssert(value, reason);
+            if (!value) {
+                NSDictionary *userInfo = @{@"reason":reason};
+                self.paramError = [NSError errorWithDomain:@"com.ios.ybrequest .ErrorDomain" code:-1 userInfo:userInfo];
+            }
+        }else if (_optional) {
+            
+        }else if (_ignored) {
+            continue;
+        }
         if (!value) { continue; }
+
         NSString *realKey = key;
         if (mappers) {//在映射里获取到真实的key
             if ([[mappers allKeys] containsObject:key]) {
@@ -73,6 +137,16 @@
         [mutDic setObject:value forKey:realKey];
     }
     free(properties);
+    
+    if ([self respondsToSelector:@selector(ignorePropertyKeys)]) {
+        NSArray *ignoreKeys = [self ignorePropertyKeys];
+        for (NSString *key in ignoreKeys) {
+            if ([mutDic objectForKey:key]) {
+                [mutDic removeObjectForKey:key];
+            }
+        }
+    }
+    
     return mutDic.copy;
 }
 

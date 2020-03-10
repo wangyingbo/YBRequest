@@ -14,7 +14,7 @@ PODS:
   - AFNetworking/Serialization (3.2.1)
   - AFNetworking/UIKit (3.2.1):
     - AFNetworking/NSURLSession
-  - YBRequest (0.1.4):
+  - YBRequest (0.1.5):
     - AFNetworking
 
 DEPENDENCIES:
@@ -30,8 +30,8 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
-  YBRequest: 811c88b41a0e833935f911921e6d7e11775eb826
+  YBRequest: 0555fbc223bb2172f4e17de972142020c856d550
 
 PODFILE CHECKSUM: 6a9f2787593f896474264490ea08dad4ec9d659d
 
-COCOAPODS: 1.8.4
+COCOAPODS: 1.9.0

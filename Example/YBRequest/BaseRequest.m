@@ -38,14 +38,17 @@
     return RequestMethodPost;
 }
 
+/// 配置响应序列化方式
+- (ResponseSerializer)configureResponseSerializer {
+    return ResponseSerializerHttp;
+}
+
 /// 配置所有请求的请求头
 -(NSDictionary *)configureHeader{
     NSMutableDictionary *header = [NSMutableDictionary dictionary];
     [header setObject:@"1" forKey:@"appBundleVersion"];
     [header setObject:@"1.0" forKey:@"appVersion"];
-    [header setObject:@"US" forKey:@"countryCode"];
     [header setObject:@"en" forKey:@"lang"];
-    [header setObject:@"375x812" forKey:@"screenSize"];
     [header setObject:@"ios" forKey:@"source"];
     [header setObject:@"12.1" forKey:@"systemVersion"];
     return header;
@@ -58,10 +61,11 @@
     return header;
 }
 
-/// 配置每一个接口的参数（合并属性参数和默认参数），子类尽量不重写此方法，在此统一处理。
-- (NSDictionary *)configurePerParams {
-    return [super configurePerParams];
-}
+/// 配置每一个接口的参数（合并属性参数和默认参数）；
+/// 子类尽量不重写此方法，在此统一处理。
+//- (NSDictionary *)configurePerParams {
+//    return [super configurePerParams];
+//}
 
 /// 配置请求超时时间
 - (NSTimeInterval)configureTimeoutInterval {

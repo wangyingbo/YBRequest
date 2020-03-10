@@ -9,21 +9,29 @@
 #import "SecondTestRequest.h"
 
 @interface SecondTestRequest ()
-@property (nonatomic, copy) NSString *name;
+
+/**必传参数*/
+@property (nonatomic, copy) NSString<Required> *name;
+/**一般参数*/
 @property (nonatomic, copy) NSString *ID;
+/**可选参数*/
+@property (nonatomic, copy) NSString<Optional> *age;
+/**被忽略的参数*/
+@property (nonatomic, copy) NSString<Ignored> *nickName;
+
 @end
 
 @implementation SecondTestRequest
 
 + (instancetype)startRequestWithName:(NSString *)name ID:(NSString *)ID success:(BaseRequestSuccessBlock)success failure:(BaseRequestFailureBlock)failure {
     SecondTestRequest *request = [[[self class] alloc] init];
-    request.name = name;
+    request.name = (NSString<Required> *)name;
     request.ID = ID;
     [request requestWithFinish:success requestFailed:failure];
     return request;
 }
 
-- (NSString *)configureUrl{
+- (NSString *)configureUrl {
     return @"s";
 }
 
@@ -40,6 +48,11 @@
         @"type":@"bankList",
         @"pageSize":@"20",
     };
+}
+
+/// 需要被忽略的参数名
+- (NSArray<NSString *> *)ignorePropertyKeys {
+    return @[@"type"];
 }
 
 /// 是否禁止打印log
