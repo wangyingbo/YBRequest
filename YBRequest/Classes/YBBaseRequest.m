@@ -469,7 +469,8 @@
     }
     [sessionManager setSecurityPolicy:self.securityPolicy];
     NSString *enUrl = @"";
-    enUrl = [self.totalUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    //enUrl = [self.totalUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    enUrl = self.totalUrl;//不做url归档处理
     NSDictionary *enParam = [_totalParams isKindOfClass:[NSDictionary class]]?_totalParams:@{};
     __block NSURLSessionTask *sessionTask = nil;
     
