@@ -134,7 +134,7 @@
     return YES;
 }
 
-/// 可在此对参数进行一些处理，比如加密等
+/// 将发送请求
 /// @param request request description
 /// @param task task description
 - (BOOL)requestProgressWillSendRequest:(YBBaseRequest *)request task:(NSURLSessionTask *)task {
