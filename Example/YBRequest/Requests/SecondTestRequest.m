@@ -35,6 +35,14 @@
     return @"s";
 }
 
+/// 配置每一个接口的不同请求头
+- (NSDictionary *)configurePerRequestHeader {
+    return @{
+        @"message":@"130****2915",
+        @"email":@"wangyingbo0528@gmail.com",
+    };
+}
+
 /// 属性参数名做映射转换
 - (NSDictionary<NSString *,NSString *> *)propertyKeyMapper {
     return @{

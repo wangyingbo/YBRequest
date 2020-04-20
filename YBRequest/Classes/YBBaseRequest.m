@@ -178,6 +178,7 @@
         _securityPolicy = [aDecoder decodeObjectForKey:@"_securityPolicy"];
         
         _header = [aDecoder decodeObjectForKey:@"_header"];
+        _perHeader = [aDecoder decodeObjectForKey:@"_perHeader"];
         
         _params = [aDecoder decodeObjectForKey:@"_params"];
         _defalutParams = [aDecoder decodeObjectForKey:@"_defalutParams"];
@@ -201,6 +202,7 @@
     if (_securityPolicy)[aCoder encodeObject:_securityPolicy forKey:@"_securityPolicy"];
     
     if (_header)[aCoder encodeObject:_header forKey:@"_header"];
+    if (_perHeader)[aCoder encodeObject:_perHeader forKey:@"_perHeader"];
     
     if (_params)[aCoder encodeObject:_params forKey:@"_params"];
     if (_defalutParams)[aCoder encodeObject:_defalutParams forKey:@"_defalutParams"];
@@ -244,6 +246,9 @@
     return RequestMethodPost;
 }
 - (NSDictionary *)configureHeader{
+    return @{};
+}
+- (NSDictionary *)configurePerRequestHeader {
     return @{};
 }
 - (NSDictionary *)configureDefalutParams{
@@ -364,6 +369,14 @@
     }else{
         _header = nil;
     }
+    //获取每一个请求的header
+    if ([self.paramDelegate respondsToSelector:@selector(configurePerRequestHeader)]) {
+        NSDictionary *perDic = [self.paramDelegate configurePerRequestHeader];
+        if (perDic && [perDic isKindOfClass:[NSDictionary class]]) {
+            NSMutableDictionary *mutDict = [NSMutableDictionary dictionaryWithDictionary:perDic];
+            _perHeader = mutDict;
+        }
+    }
     //获取默认参数
     if ([self.paramDelegate respondsToSelector:@selector(configureDefalutParams)]) {
         NSDictionary *dic = [self.paramDelegate configureDefalutParams];
@@ -473,6 +486,7 @@
     enUrl = self.totalUrl;//不做url归档处理
     NSDictionary *enParam = [_totalParams isKindOfClass:[NSDictionary class]]?_totalParams:@{};
     __block NSURLSessionTask *sessionTask = nil;
+    NSDictionary *perHeader = self.perHeader;
     
     //将要发送请求
     if([self.requestDelegate respondsToSelector:@selector(requestProgressWillSendRequest:task:)]){
@@ -483,62 +497,40 @@
     switch (self.requestMethod) {
         case RequestMethodPost:{
             self.startTime = CFAbsoluteTimeGetCurrent();
-            sessionTask = [sessionManager POST:enUrl parameters:enParam progress:^(NSProgress * _Nonnull downloadProgress) {
+            sessionTask = [sessionManager POST:enUrl parameters:enParam headers:perHeader progress:^(NSProgress * _Nonnull uploadProgress) {
                 //正在请求
                 if([weakSelf.requestDelegate respondsToSelector:@selector(requestProgressProgressingRequest:task:progress:)]){
-                    [weakSelf.requestDelegate requestProgressProgressingRequest:weakSelf
-                                                                           task:sessionTask
-                                                                       progress:downloadProgress];
+                    [weakSelf.requestDelegate requestProgressProgressingRequest:weakSelf task:sessionTask progress:uploadProgress];
                 }
             } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
                 //请求完成
                 weakSelf.endTime = CFAbsoluteTimeGetCurrent();
                 sessionTask = task;
                 if([weakSelf.requestDelegate respondsToSelector:@selector(requestProgressDidFinishRequest:task:responseObject:)]){
-                    [weakSelf.requestDelegate requestProgressDidFinishRequest:weakSelf
-                                                                         task:task
-                                                               responseObject:responseObject];
+                    [weakSelf.requestDelegate requestProgressDidFinishRequest:weakSelf task:task responseObject:responseObject];
                 }
                 if ([weakSelf.requestDelegate respondsToSelector:@selector(requestProgressWillFinishCallBack:task:progress:responseObject:withError:)]) {
-                    BOOL con = [weakSelf.requestDelegate requestProgressWillFinishCallBack:weakSelf
-                                                                                      task:task
-                                                                                  progress:nil
-                                                                            responseObject:responseObject
-                                                                                 withError:nil];
+                    BOOL con = [weakSelf.requestDelegate requestProgressWillFinishCallBack:weakSelf task:task progress:nil responseObject:responseObject withError:nil];
                     if(weakSelf.finishBlock && con){
                         weakSelf.finishBlock(weakSelf);
-                        [weakSelf.requestDelegate requestProgressDidFinishCallBack:weakSelf
-                                                                              task:task
-                                                                          progress:nil
-                                                                    responseObject:responseObject
-                                                                         withError:nil];
+                        [weakSelf.requestDelegate requestProgressDidFinishCallBack:weakSelf task:task progress:nil responseObject:responseObject withError:nil];
                     }
                 }
-                
                 [[YBRequestManager shareInstance]removeRequest:weakSelf];
+                
             } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
                 //请求失败
                 weakSelf.endTime = CFAbsoluteTimeGetCurrent();
                 sessionTask = task;
                 weakSelf.error = error;
                 if([weakSelf.requestDelegate respondsToSelector:@selector(requestProgressDidFailedRequest:task:withError:)]){
-                    [weakSelf.requestDelegate requestProgressDidFailedRequest:weakSelf
-                                                                         task:task
-                                                                    withError:error];
+                    [weakSelf.requestDelegate requestProgressDidFailedRequest:weakSelf task:task withError:error];
                 }
                 if ([weakSelf.requestDelegate respondsToSelector:@selector(requestProgressWillFailedCallBack:task:progress:responseObject:withError:)]) {
-                    BOOL con = [weakSelf.requestDelegate requestProgressWillFailedCallBack:weakSelf
-                                                                                      task:task
-                                                                                  progress:nil
-                                                                            responseObject:nil
-                                                                                 withError:error];
+                    BOOL con = [weakSelf.requestDelegate requestProgressWillFailedCallBack:weakSelf task:task progress:nil responseObject:nil withError:error];
                     if (weakSelf.failedBlock && con) {
                         weakSelf.failedBlock(weakSelf);
-                        [weakSelf.requestDelegate requestProgressDidFailedCallBack:weakSelf
-                                                                              task:task
-                                                                          progress:nil
-                                                                    responseObject:nil
-                                                                         withError:error];
+                        [weakSelf.requestDelegate requestProgressDidFailedCallBack:weakSelf task:task progress:nil responseObject:nil withError:error];
                     }
                 }
                 [[YBRequestManager shareInstance]removeRequest:weakSelf];
@@ -546,7 +538,7 @@
         }break;
         case RequestMethodGet:{
             self.startTime = CFAbsoluteTimeGetCurrent();
-            sessionTask = [sessionManager GET:enUrl parameters:enParam progress:^(NSProgress * _Nonnull downloadProgress) {
+            sessionTask = [sessionManager GET:enUrl parameters:enParam headers:perHeader progress:^(NSProgress * _Nonnull downloadProgress) {
                 //正在请求
                 if([weakSelf.requestDelegate respondsToSelector:@selector(requestProgressProgressingRequest:task:progress:)]){
                     [weakSelf.requestDelegate requestProgressProgressingRequest:weakSelf
@@ -608,7 +600,7 @@
         }break;
         case RequestMethodUploadPost:{
             self.startTime = CFAbsoluteTimeGetCurrent();
-            sessionTask = [sessionManager POST:enUrl parameters:enParam constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+            sessionTask = [sessionManager POST:enUrl parameters:enParam headers:perHeader constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
                 if (weakSelf.uploadBlock) {
                     weakSelf.uploadBlock(formData);
                     if ([weakSelf.requestDelegate respondsToSelector:@selector(requestProgressUploadDidJointedFormdataRequest:task:formData:)]) {

@@ -248,7 +248,9 @@
         [log appendFormat:@"\n"];
         [log appendFormat:@"\n【url】:%@",self.totalUrl];
         [log appendFormat:@"\n"];
-        [log appendFormat:@"\n【custem-header】:%@",self.header];
+        [log appendFormat:@"\n【general-header】:%@",self.header];
+        [log appendFormat:@"\n"];
+        [log appendFormat:@"\n【request-header】:%@",self.perHeader];
         [log appendFormat:@"\n"];
         [log appendFormat:@"\n【all-header】:%@",self.task.currentRequest.allHTTPHeaderFields];
         [log appendFormat:@"\n"];

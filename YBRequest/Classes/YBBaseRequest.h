@@ -66,19 +66,19 @@ typedef NS_ENUM(NSUInteger,ResponseSerializer) {
     ResponseSerializerJson = 1,
 };
 
-//NS_ASSUME_NONNULL_BEGIN
+NS_ASSUME_NONNULL_BEGIN
 
 
 //请求回调block
-typedef void (^RequestStartBlock)(id request);
-typedef void (^RequestProgressBlock)(id request,NSProgress *progress);
-typedef void (^RequestFinishBlock)(id request);
-typedef void (^RequestCanceledBlock)(id request);
-typedef void (^RequestFailedBlock)(id request);
+typedef void (^ _Nullable RequestStartBlock)(id request);
+typedef void (^ _Nullable RequestProgressBlock)(id request,NSProgress *progress);
+typedef void (^ _Nullable RequestFinishBlock)(id request);
+typedef void (^ _Nullable RequestCanceledBlock)(id request);
+typedef void (^ _Nullable RequestFailedBlock)(id request);
 //上传block
-typedef void (^RequestUploadDataBlock)(id<AFMultipartFormData>formData);
+typedef void (^ _Nullable RequestUploadDataBlock)(id<AFMultipartFormData>formData);
 //下载block
-typedef void (^RequestDownloadcompletionBlock)(NSURLResponse *response, NSURL *filePath, NSError *error);
+typedef void (^ _Nullable RequestDownloadcompletionBlock)(NSURLResponse *response, NSURL *filePath, NSError *error);
 
 #pragma mark - YBRequestParamDelegate
 
@@ -87,17 +87,22 @@ typedef void (^RequestDownloadcompletionBlock)(NSURLResponse *response, NSURL *f
  */
 @protocol YBRequestParamDelegate <NSObject>
 
-- (RequestType)configureRequestType;//配置请求方式
+///配置请求方式
+- (RequestType)configureRequestType;
 - (NSSet <NSString *> *)configureAcceptableContentTypes;
 - (ResponseSerializer)configureResponseSerializer;//响应序列化
 - (RequestMethod)configureRequestMethod;//配置请求方法
 - (NSString *)configureBaseUrl;//配置baseUrl
 - (NSString *)configureUrl;//配置url
 
-- (NSData   *)configureDownloadResumeData;//配置下载的断点数据
-- (NSURL    *)configureDownloadDestinationPath:(NSURL *)targetPath response:(NSURLResponse *)response;//配置下载的目标目录
+- (NSData *)configureDownloadResumeData;//配置下载的断点数据
+- (NSURL *)configureDownloadDestinationPath:(NSURL *)targetPath response:(NSURLResponse *)response;//配置下载的目标目录
 
-- (NSDictionary *)configureHeader;//配置请求头
+
+/// 配置总的请求头
+- (NSDictionary *)configureHeader;
+/// 配置每个接口的请求头
+- (nullable NSDictionary *)configurePerRequestHeader;
 //配置所有请求的默认请求参数,请求时会和传进来的参数合并,并且传的参数会覆盖默认参数的相同项
 - (NSDictionary *)configureDefalutParams;
 - (NSDictionary *)configurePerParams;//配置每一个接口的参数
@@ -131,48 +136,48 @@ typedef void (^RequestDownloadcompletionBlock)(NSURLResponse *response, NSURL *f
 //请求-上传请求已经拼接完上传的数据,如需修改上传数据重写此方法即可
 -(void)requestProgressUploadDidJointedFormdataRequest:(YBBaseRequest *)request
                                                  task:(NSURLSessionTask *)task
-                                             formData:(id)formData;
+                                             formData:( _Nullable id)formData;
 //请求已经发送请求,正在等待服务器返回结果
 -(void)requestProgressDidSendRequest:(YBBaseRequest *)request
                                 task:(NSURLSessionTask *)task;
 //请求已经发送,回调请求/上传/下载进度
 -(void)requestProgressProgressingRequest:(YBBaseRequest *)request
                                     task:(NSURLSessionTask *)task
-                                progress:(NSProgress *)progress;
+                                progress:(NSProgress * _Nullable )progress;
 //请求完成/下载完成/上传完成
 -(void)requestProgressDidFinishRequest:(YBBaseRequest *)request
                                   task:(NSURLSessionTask *)task
-                        responseObject:(id)responseObject;
+                        responseObject:( _Nullable id)responseObject;
 //请求取消
 -(void)requestProgressDidCancelRequest;
 //请求失败
 -(void)requestProgressDidFailedRequest:(YBBaseRequest *)request
                                   task:(NSURLSessionTask *)task
-                             withError:(NSError*)error;
+                             withError:(NSError* _Nullable )error;
 //请求完成,将要回调到请求完成block
 -(BOOL)requestProgressWillFinishCallBack:(YBBaseRequest *)request
                                     task:(NSURLSessionTask *)task
-                                progress:(NSProgress *)progress
-                          responseObject:(id)responseObject
-                               withError:(NSError*)error;
+                                progress:(NSProgress * _Nullable )progress
+                          responseObject:( _Nullable id)responseObject
+                               withError:(NSError* _Nullable )error;
 //请求完成,已经回调到请求完成block
--(void)requestProgressDidFinishCallBack:(YBBaseRequest *)request
-                                   task:(NSURLSessionTask *)task
-                               progress:(NSProgress *)progress
-                         responseObject:(id)responseObject
-                              withError:(NSError*)error;
+-(void)requestProgressDidFinishCallBack:(YBBaseRequest  * _Nullable )request
+                                   task:(NSURLSessionTask * _Nullable)task
+                               progress:(NSProgress * _Nullable)progress
+                         responseObject:(_Nullable id)responseObject
+                              withError:(NSError* _Nullable )error;
 //请求完成,将要回调到请求失败block
 -(BOOL)requestProgressWillFailedCallBack:(YBBaseRequest *)request
                                     task:(NSURLSessionTask *)task
-                                progress:(NSProgress *)progress
-                          responseObject:(id)responseObject
-                               withError:(NSError*)error;
+                                progress:(NSProgress * _Nullable )progress
+                          responseObject:( _Nullable id)responseObject
+                               withError:(NSError* _Nullable )error;
 //请求完成,已经回调到请求失败block
 -(void)requestProgressDidFailedCallBack:(YBBaseRequest *)request
                                    task:(NSURLSessionTask *)task
-                               progress:(NSProgress *)progress
-                         responseObject:(id)responseObject
-                              withError:(NSError*)error;
+                               progress:(NSProgress * _Nullable )progress
+                         responseObject:(id _Nullable )responseObject
+                              withError:(NSError* _Nullable )error;
 
 @end
 
@@ -217,8 +222,10 @@ typedef void (^RequestDownloadcompletionBlock)(NSURLResponse *response, NSURL *f
 /**隐私策略*/
 @property (nonatomic, strong) AFSecurityPolicy *securityPolicy;
 
-/**请求头*/
+/**请求头-所有默认的请求头*/
 @property (nonatomic, strong) NSMutableDictionary *header;
+/**每个接口的请求头*/
+@property (nonatomic, strong) NSMutableDictionary *perHeader;
 /**请求参数*/
 @property (nonatomic, strong) YBRequestParam *params;
 /**请求默认参数*/
@@ -252,12 +259,12 @@ typedef void (^RequestDownloadcompletionBlock)(NSURLResponse *response, NSURL *f
 
 
 #pragma mark - factory method
-+(instancetype)requestWithDic:(NSDictionary *)dic
++(instancetype)requestWithDic:(NSDictionary * _Nullable )dic
                 requestFinish:(RequestFinishBlock)finish
                 requestFailed:(RequestFailedBlock)failed;
 
-+(instancetype)requestWithDic:(NSDictionary *)dic
-                       inView:(UIView *)inView
++(instancetype)requestWithDic:(NSDictionary * _Nullable )dic
+                       inView:(UIView * _Nullable )inView
                 requestFinish:(RequestFinishBlock)finish
                 requestFailed:(RequestFailedBlock)failed;
 
@@ -265,43 +272,33 @@ typedef void (^RequestDownloadcompletionBlock)(NSURLResponse *response, NSURL *f
                   requestFinish:(RequestFinishBlock)finish
                   requestFailed:(RequestFailedBlock)failed;
 
-+(instancetype)requestWithParam:(YBRequestParam *)param
-                         inView:(UIView *)inView
++(instancetype)requestWithParam:(YBRequestParam * _Nullable )param
+                         inView:(UIView * _Nullable )inView
                   requestFinish:(RequestFinishBlock)finish
                   requestFailed:(RequestFailedBlock)failed;
 
-+(instancetype)requestWithParam:(YBRequestParam *)param
-                         inView:(UIView *)inView
++(instancetype)requestWithParam:(YBRequestParam * _Nullable )param
+                         inView:(UIView * _Nullable )inView
                   requestUpload:(RequestUploadDataBlock)upload
                 requestProgress:(RequestProgressBlock)progress
                   requestFinish:(RequestFinishBlock)finish
                   requestFailed:(RequestFailedBlock)failed;
 
-+(instancetype)requestWithParam:(YBRequestParam *)param
-                         inView:(UIView *)inView
++(instancetype)requestWithParam:(YBRequestParam * _Nullable )param
+                         inView:(UIView * _Nullable )inView
                    requestStart:(RequestStartBlock)start
                   requestUpload:(RequestUploadDataBlock)upload
                 requestProgress:(RequestProgressBlock)progress
-                  requestFinish:(RequestFinishBlock)finish
-                requestCanceled:(RequestCanceledBlock)canceled
-                  requestFailed:(RequestFailedBlock)failed;
+                  requestFinish:(RequestFinishBlock)finish requestCanceled:(RequestCanceledBlock)canceled requestFailed:(RequestFailedBlock)failed;
 
 
-+(instancetype)requestWithDownloadRequest:(NSURLRequest *)downRequest
-                                   inView:(UIView *)inView
-                             requestStart:(RequestStartBlock)start
-                          requestProgress:(RequestProgressBlock)progress
-                               completion:(RequestDownloadcompletionBlock)completion;
++(instancetype)requestWithDownloadRequest:(NSURLRequest *)downRequest inView:(UIView * _Nullable )inView requestStart:(RequestStartBlock)start requestProgress:(RequestProgressBlock)progress completion:(RequestDownloadcompletionBlock)completion;
 
--(instancetype)initWithParam:(YBRequestParam *)param
-                      inView:(UIView *)inView
+-(instancetype)initWithParam:(YBRequestParam * _Nullable )param
+                      inView:(UIView * _Nullable )inView
                 requestStart:(RequestStartBlock)start
                requestUpload:(RequestUploadDataBlock)upload
-             requestProgress:(RequestProgressBlock)progress
-                  completion:(RequestDownloadcompletionBlock)completion
-               requestFinish:(RequestFinishBlock)finish
-             requestCanceled:(RequestCanceledBlock)canceled
-               requestFailed:(RequestFailedBlock)failed;
+             requestProgress:(RequestProgressBlock)progress completion:(RequestDownloadcompletionBlock)completion requestFinish:(RequestFinishBlock)finish requestCanceled:(RequestCanceledBlock)canceled requestFailed:(RequestFailedBlock)failed;
 
 -(void)beginRequest;
 
@@ -312,7 +309,7 @@ typedef void (^RequestDownloadcompletionBlock)(NSURLResponse *response, NSURL *f
 -(instancetype)requestWithFinish:(RequestFinishBlock)finish
                    requestFailed:(RequestFailedBlock)failed;
 
--(instancetype)requestWithInView:(UIView *)inView
+-(instancetype)requestWithInView:(UIView * _Nullable )inView
                    requestFinish:(RequestFinishBlock)finish
                    requestFailed:(RequestFailedBlock)failed;
 
@@ -323,21 +320,12 @@ typedef void (^RequestDownloadcompletionBlock)(NSURLResponse *response, NSURL *f
                 requestCanceled:(RequestCanceledBlock)canceled
                   requestFailed:(RequestFailedBlock)failed;
 
--(instancetype)requestWithStart:(RequestStartBlock)start
-                requestProgress:(RequestProgressBlock)progress
-                     completion:(RequestDownloadcompletionBlock)completion;
+-(instancetype)requestWithStart:(RequestStartBlock)start requestProgress:(RequestProgressBlock)progress completion:(RequestDownloadcompletionBlock)completion;
 
--(instancetype)requestWithParam:(NSDictionary *)dict
-                         inView:(UIView *)inView
-                   requestStart:(RequestStartBlock)start
-                  requestUpload:(RequestUploadDataBlock)upload
-                requestProgress:(RequestProgressBlock)progress
-                     completion:(RequestDownloadcompletionBlock)completion
-                  requestFinish:(RequestFinishBlock)finish
-                requestCanceled:(RequestCanceledBlock)canceled
-                  requestFailed:(RequestFailedBlock)failed;
+-(instancetype)requestWithParam:(NSDictionary * _Nullable)dict
+                         inView:(UIView * _Nullable )inView
+                   requestStart:(RequestStartBlock)start requestUpload:(RequestUploadDataBlock)upload requestProgress:(RequestProgressBlock)progress completion:(RequestDownloadcompletionBlock)completion requestFinish:(RequestFinishBlock)finish requestCanceled:(RequestCanceledBlock)canceled requestFailed:(RequestFailedBlock)failed;
 
 @end
 
-//NS_ASSUME_NONNULL_END
-
+NS_ASSUME_NONNULL_END
