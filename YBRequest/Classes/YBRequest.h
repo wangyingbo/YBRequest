@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "YBBaseRequest.h"
 
-
+NS_ASSUME_NONNULL_BEGIN
 
 @protocol Ignored
 @end
@@ -48,5 +48,5 @@
 @end
 
 
-
+NS_ASSUME_NONNULL_END
 

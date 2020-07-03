@@ -43,7 +43,7 @@
     return ResponseSerializerHttp;
 }
 
-/// 配置所有请求的请求头
+/// 配置所有请求的共同请求头
 -(NSDictionary *)configureHeader{
     NSMutableDictionary *header = [NSMutableDictionary dictionary];
     [header setObject:@"1" forKey:@"appBundleVersion"];
@@ -52,6 +52,11 @@
     [header setObject:@"ios" forKey:@"source"];
     [header setObject:@"12.1" forKey:@"systemVersion"];
     return header;
+}
+
+/// 配置每一个接口的不同请求头
+- (NSDictionary *)configurePerRequestHeader {
+    return @{};
 }
 
 /// 配置所有接口请求的默认参数，每个接口都会有此参数
