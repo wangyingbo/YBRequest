@@ -14,15 +14,18 @@ PODS:
   - AFNetworking/Serialization (4.0.1)
   - AFNetworking/UIKit (4.0.1):
     - AFNetworking/NSURLSession
-  - YBRequest (0.1.7):
+  - Aspect (1.3.5)
+  - YBRequest (0.2.0):
     - AFNetworking
 
 DEPENDENCIES:
+  - Aspect (~> 1.3.5)
   - YBRequest (from `../`)
 
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
     - AFNetworking
+    - Aspect
 
 EXTERNAL SOURCES:
   YBRequest:
@@ -30,8 +33,9 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   AFNetworking: 7864c38297c79aaca1500c33288e429c3451fdce
-  YBRequest: 234380684d51d48e40925ffbc4a70244f8295c62
+  Aspect: 65abb3b49d24e8e8452bbf8ee988012c18eff61e
+  YBRequest: 667c2be8fb93f9114eddb0b13e19e4c0be5f67b0
 
-PODFILE CHECKSUM: 79c74a795446586457294639fa9867d7685b728f
+PODFILE CHECKSUM: 2fa0f4f5e062111f6df08a1804f625f8159ea862
 
-COCOAPODS: 1.9.0
+COCOAPODS: 1.9.3

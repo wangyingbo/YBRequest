@@ -1,6 +1,6 @@
 {
   "name": "YBRequest",
-  "version": "0.1.7",
+  "version": "0.2.0",
   "summary": "a afn sub classes",
   "description": "a afn sub classes for self",
   "homepage": "https://github.com/wangyingbo/YBRequest",
@@ -13,10 +13,10 @@
   },
   "source": {
     "git": "https://github.com/wangyingbo/YBRequest.git",
-    "tag": "0.1.7"
+    "tag": "0.2.0"
   },
   "platforms": {
-    "ios": "8.0"
+    "ios": "9.0"
   },
   "source_files": "YBRequest/Classes/**/*",
   "dependencies": {
