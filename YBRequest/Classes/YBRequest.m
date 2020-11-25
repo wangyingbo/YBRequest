@@ -157,13 +157,15 @@
     
     NSError *error = nil;
     id json = nil;
-    @try {
-        json = [NSJSONSerialization JSONObjectWithData:self.responseObject options:NSJSONReadingMutableLeaves error:&error];
-    } @catch (NSException *exception) {
-        self.error = error;
-        NSLog(@"服务器返回数据解析错误:parse error! : %@",self.responseObject);
-    } @finally {
-        
+    if (self.responseObject) {
+        @try {
+            json = [NSJSONSerialization JSONObjectWithData:self.responseObject options:NSJSONReadingMutableLeaves error:&error];
+        } @catch (NSException *exception) {
+            self.error = error;
+            NSLog(@"服务器返回数据解析错误:parse error! : %@",self.responseObject);
+        } @finally {
+            
+        }
     }
     if (error == nil) {
         self.responseJson = json;
